@@ -1,10 +1,22 @@
 import { Briefcase, BarChart3, Settings, Plus } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface SidebarProps {
   onAddClick: () => void;
 }
 
 export default function Sidebar({ onAddClick }: SidebarProps) {
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {
+      // Even if signOut fails, we still want to take the user to login.
+      console.error('Error signing out:', e);
+    } finally {
+      window.location.href = '/login';
+    }
+  };
+
   return (
     <div className="w-64 bg-slate-900 text-white min-h-screen p-6 flex flex-col">
       <div className="mb-8">
@@ -49,6 +61,13 @@ export default function Sidebar({ onAddClick }: SidebarProps) {
 
       <div className="pt-6 border-t border-slate-800">
         <p className="text-slate-500 text-xs">Made with care</p>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="mt-4 w-full bg-slate-800 hover:bg-slate-700 text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center transition-colors"
+        >
+          Logout
+        </button>
       </div>
     </div>
   );
